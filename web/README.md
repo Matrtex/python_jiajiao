@@ -23,7 +23,7 @@ https://blog.csdn.net/qq_41636947/article/details/117907448
 在index.html里面引入的cdn
 
 ##### cdn
-https://cdn.jsdelivr.net/npm/ant-design-vue@3.2.20/dist/
-https://cdn.staticfile.org/ant-design-vue/3.2.20/antd.min.css
+index.html 使用固定版本的 jsDelivr 地址，并通过 SRI 校验 Ant Design Vue CSS 与 ECharts JavaScript。
+更新 CDN 版本时必须同步更新 `integrity`，否则浏览器会拒绝加载资源。
 
 #### public文件夹内容在build后会自动打到dist中
