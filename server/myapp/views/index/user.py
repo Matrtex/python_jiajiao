@@ -7,8 +7,8 @@ from myapp import utils
 from myapp.auth.authentication import TokenAuthtication
 from myapp.handler import APIResponse
 from myapp.models import User
+from myapp.security import generate_token, hash_password, verify_and_upgrade_password, verify_password
 from myapp.serializers import UserSerializer, LoginLogSerializer
-from myapp.utils import md5value
 
 
 def make_login_log(request):
@@ -31,27 +31,29 @@ def make_login_log(request):
 @api_view(['POST'])
 def login(request):
     username = request.data['username']
-    password = utils.md5value(request.data['password'])
+    raw_password = request.data['password']
 
-    users = User.objects.filter(username=username, password=password)
-    if len(users) > 0:
-        user = users[0]
+    user = None
+    password_upgraded = False
+    for candidate in User.objects.filter(username=username):
+        password_valid, password_upgraded = verify_and_upgrade_password(candidate, raw_password)
+        if password_valid:
+            user = candidate
+            break
 
+    if user is not None:
         if user.role in ['1', '3']:
             return APIResponse(code=1, msg='该帐号为后台管理员帐号')
 
-        data = {
-            'username': username,
-            'password': password,
-            'token': md5value(username)  # 生成令牌
-        }
-        serializer = UserSerializer(user, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            make_login_log(request)
-            return APIResponse(code=0, msg='登录成功', data=serializer.data)
-        else:
-            print(serializer.errors)
+        user.token = generate_token()
+        update_fields = ['token']
+        if password_upgraded:
+            update_fields.append('password')
+        user.save(update_fields=update_fields)
+
+        serializer = UserSerializer(user)
+        make_login_log(request)
+        return APIResponse(code=0, msg='登录成功', data=serializer.data)
 
     return APIResponse(code=1, msg='用户名或密码错误')
 
@@ -76,7 +78,7 @@ def register(request):
         'role': 2,  # 角色2
         'status': 0,
     }
-    data.update({'password': utils.md5value(request.data['password'])})
+    data.update({'password': hash_password(request.data['password'])})
     serializer = UserSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
@@ -144,19 +146,13 @@ def updatePwd(request):
     if not password or not newPassword1 or not newPassword2:
         return APIResponse(code=1, msg='不能为空')
 
-    if user.password != utils.md5value(password):
+    if not verify_password(password, user.password):
         return APIResponse(code=1, msg='原密码不正确')
 
     if newPassword1 != newPassword2:
         return APIResponse(code=1, msg='两次密码不一致')
 
-    data = request.data.copy()
-    data.update({'password': utils.md5value(newPassword1)})
-    serializer = UserSerializer(user, data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return APIResponse(code=0, msg='更新成功', data=serializer.data)
-    else:
-        print(serializer.errors)
-
-    return APIResponse(code=1, msg='更新失败')
+    user.password = hash_password(newPassword1)
+    user.save(update_fields=['password'])
+    serializer = UserSerializer(user)
+    return APIResponse(code=0, msg='更新成功', data=serializer.data)

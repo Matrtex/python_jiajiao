@@ -16,7 +16,7 @@ class User(models.Model):
     )
     id = models.BigAutoField(primary_key=True)
     username = models.CharField(max_length=50, null=True)
-    password = models.CharField(max_length=50, null=True)
+    password = models.CharField(max_length=128, null=True)
     role = models.CharField(max_length=2, blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='0')
     nickname = models.CharField(blank=True, null=True, max_length=20)

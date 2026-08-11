@@ -1,5 +1,4 @@
 import datetime
-import hashlib
 import time
 
 from rest_framework.views import exception_handler
@@ -8,14 +7,6 @@ from myapp.serializers import ErrorLogSerializer
 
 def get_timestamp():
     return int(round(time.time() * 1000))
-
-def md5value(key):
-    input_name = hashlib.md5()
-    input_name.update(key.encode("utf-8"))
-    md5str = (input_name.hexdigest()).lower()
-    print('计算md5:', md5str)
-    return md5str
-
 
 def dict_fetchall(cursor):  # cursor是执行sql_str后的记录，作入参
     columns = [col[0] for col in cursor.description]  # 得到域的名字col[0]，组成List
