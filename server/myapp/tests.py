@@ -24,16 +24,16 @@ class PasswordSecurityTests(SimpleTestCase):
         self.assertTrue(check_password('correct horse battery staple', encoded))
         self.assertFalse(check_password('wrong password', encoded))
 
-    def test_legacy_md5_password_is_accepted_and_upgraded(self):
-        # admin123 的存量 MD5，仅用于覆盖兼容迁移路径。
+    def test_legacy_md5_password_is_rejected_without_upgrade(self):
+        # 旧 MD5 不再参与认证，管理员必须为该账户重置密码。
         user = StubUser('0192023a7bbd73250516f069df18b500')
 
         is_valid, upgraded = verify_and_upgrade_password(user, 'admin123')
 
-        self.assertTrue(is_valid)
-        self.assertTrue(upgraded)
-        self.assertEqual(identify_hasher(user.password).algorithm, 'pbkdf2_sha256')
-        self.assertTrue(verify_password('admin123', user.password))
+        self.assertFalse(is_valid)
+        self.assertFalse(upgraded)
+        self.assertEqual(user.password, '0192023a7bbd73250516f069df18b500')
+        self.assertFalse(verify_password('admin123', user.password))
 
     def test_invalid_legacy_password_is_not_upgraded(self):
         legacy_password = '0192023a7bbd73250516f069df18b500'

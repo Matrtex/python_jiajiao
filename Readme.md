@@ -47,8 +47,8 @@ mysql> source D:/xxx/xxx/xxx.sql;
 ```
 
 旧版数据库升级本项目时，启动新代码前需执行
-`database_migrations/20260811_expand_user_password.sql`。存量 MD5 密码仍可登录，
-并会在首次成功登录后自动迁移为 Django PBKDF2 哈希。
+`database_migrations/20260811_expand_user_password.sql`。旧的 MD5 密码不再允许登录，
+管理员必须为相关账户重置密码，使其保存为 Django PBKDF2 哈希。
 
 (5) 启动django服务。在server目录下执行：
 ```
