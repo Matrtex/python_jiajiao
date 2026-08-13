@@ -110,13 +110,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# 新密码使用 PBKDF2；最后一项只用于验证并迁移数据库中的存量无盐 MD5。
+# 新密码使用 PBKDF2；存量无盐 MD5 由 myapp.security 单独校验并迁移。
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
 ]
 
 # Internationalization
@@ -129,8 +128,6 @@ LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = False
 

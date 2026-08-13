@@ -71,8 +71,7 @@ ForeignKey的时候字段会自动加_id后缀
 mysqldump -u root -p --databases 数据库名称 > xxx.sql
 数据库还原命令:
 source D:/xxx/xxx/shop.sql;
-创建管理员命令：
-insert into b_user(username,password,role,status) values('admin111',md5('admin111'),1,'0');
+创建管理员时请通过应用接口或 Django 密码哈希工具生成 PBKDF2 密码，禁止在数据库中写入 MD5。
 
 接口请求频次限制
 

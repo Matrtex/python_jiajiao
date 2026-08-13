@@ -9,7 +9,7 @@ def hash_password(raw_password):
 
 
 def verify_password(raw_password, encoded_password):
-    """校验当前强哈希或存量无盐 MD5 密码。"""
+    """校验 Django 支持的强密码哈希。"""
     return check_password(raw_password, encoded_password)
 
 
