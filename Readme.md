@@ -57,7 +57,7 @@ python manage.py runserver
 
 #### 前端运行步骤
 
-(1) 安装node 16.14
+(1) 安装 Node.js 20.19 或更高版本
 
 (2) 进入web目录下，安装依赖，执行:
 ```
@@ -67,6 +67,8 @@ npm install
 ```
 npm run dev
 ```
+
+前端统一使用 npm 和 `package-lock.json` 管理依赖，请使用 `npm ci` 进行可重复安装。
 
 
 ### 界面预览

@@ -1,9 +1,14 @@
 import re
+from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.hashers import check_password, identify_hasher
 from django.test import SimpleTestCase
+from django.urls import resolve
+from rest_framework.test import APIRequestFactory
 
 from myapp.security import generate_token, hash_password, verify_and_upgrade_password, verify_password
+from myapp.views.index import classification as classification_views
+from myapp.views.index import user as user_views
 
 
 class StubUser:
@@ -46,3 +51,52 @@ class PasswordSecurityTests(SimpleTestCase):
 
         self.assertRegex(first_token, re.compile(r'^[0-9a-f]{32}$'))
         self.assertNotEqual(first_token, second_token)
+
+
+class ApiCompatibilitySmokeTests(SimpleTestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+
+    def test_login_endpoint_dispatches_request(self):
+        request = self.factory.post(
+            '/myapp/index/user/login',
+            {'username': 'missing-user', 'password': 'invalid-password'},
+            format='json',
+        )
+
+        with patch.object(user_views.User.objects, 'filter', return_value=[]):
+            response = user_views.login(request)
+
+        self.assertEqual(resolve('/myapp/index/user/login').url_name, None)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['code'], 1)
+
+    def test_register_endpoint_validates_required_fields(self):
+        request = self.factory.post(
+            '/myapp/index/user/register',
+            {'username': 'new-user', 'password': 'new-password'},
+            format='json',
+        )
+
+        response = user_views.register(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['code'], 1)
+
+    def test_classification_endpoint_serializes_queryset(self):
+        queryset = MagicMock()
+        serializer = MagicMock(data=[])
+        request = self.factory.get('/myapp/index/classification/list')
+
+        with (
+            patch.object(
+                classification_views.Classification.objects,
+                'all',
+                return_value=MagicMock(order_by=MagicMock(return_value=queryset)),
+            ),
+            patch.object(classification_views, 'ClassificationSerializer', return_value=serializer),
+        ):
+            response = classification_views.list_api(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'code': 0, 'msg': '查询成功', 'data': []})
