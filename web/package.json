@@ -15,7 +15,7 @@
     "axios": "^1.19.0",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",
-    "qs": "^6.15.3",
+    "qs": "^6.16.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
