@@ -12,7 +12,7 @@
     "@vueuse/components": "^9.10.0",
     "@vueuse/core": "^9.10.0",
     "ant-design-vue": "^3.2.20",
-    "axios": "^1.19.0",
+    "axios": "^1.20.0",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",
     "qs": "^6.16.0",
