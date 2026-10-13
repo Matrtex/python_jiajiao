@@ -1,7 +1,8 @@
 module.exports = {
   root: true,
   plugins: ['stylelint-order'],
-  extends: ['stylelint-config-standard', 'stylelint-config-prettier'],
+  // Stylelint 17 已移除格式规则，格式化由 Prettier 负责。
+  extends: ['stylelint-config-standard'],
   customSyntax: 'postcss-html',
   rules: {
     'function-no-unknown': null,
@@ -25,14 +26,9 @@ module.exports = {
       },
     ],
     'no-empty-source': null,
-    'string-quotes': null,
     'named-grid-areas-no-invalid': null,
-    'unicode-bom': 'never',
     'no-descending-specificity': null,
     'font-family-no-missing-generic-family-keyword': null,
-    'declaration-colon-space-after': 'always-single-line',
-    'declaration-colon-space-before': 'never',
-    // 'declaration-block-trailing-semicolon': 'always',
     'rule-empty-line-before': [
       'always',
       {
@@ -63,7 +59,6 @@ module.exports = {
   overrides: [
     {
       files: ['*.vue', '**/*.vue', '*.html', '**/*.html'],
-      extends: ['stylelint-config-recommended'],
       rules: {
         'keyframes-name-pattern': null,
         'selector-pseudo-class-no-unknown': [
@@ -83,7 +78,6 @@ module.exports = {
     {
       files: ['*.less', '**/*.less'],
       customSyntax: 'postcss-less',
-      extends: ['stylelint-config-standard', 'stylelint-config-recommended-vue'],
     },
   ],
 };
