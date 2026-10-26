@@ -31,7 +31,7 @@
 
 #### 后端运行步骤
 
-(1) 安装python 3.8
+(1) 安装 Python 3.11 或更高版本
 
 (2) 安装依赖。进入server目录下，执行 pip install -r requirements.txt
 
@@ -70,11 +70,9 @@ npm run dev
 
 前端统一使用 npm 和 `package-lock.json` 管理依赖，请使用 `npm ci` 进行可重复安装。
 
-### 开发工具依赖的已知风险
+### 依赖安全检查
 
-前端开发工具链仍存在 `braces` 深层模式递归拒绝服务风险（GHSA-vfj7-8cjw-p6xm）和 `postcss-selector-parser` 选择器解析拒绝服务风险（GHSA-rj75-hqrm-r3gf）。`braces` 的 3.0.3 版本尚无上游补丁；选择器解析器的修复版本为 7.1.6，超出现有 Stylelint 14 和 ESLint Vue 插件 9 声明的 6.x 依赖范围。
-
-这些依赖用于开发工具，不应接收来自用户上传内容的不可信路径模式或 CSS。完整 `npm audit` 仍会报告相关问题；升级开发工具链时需要同时验证规则、插件与配置兼容性，不能通过忽略告警或强制覆盖跨主版本依赖视为已修复。
+在 `web` 目录执行 `npm audit` 检查完整依赖，执行 `npm audit --omit=dev` 检查生产依赖；依赖升级后需重新运行构建。
 
 
 ### 界面预览

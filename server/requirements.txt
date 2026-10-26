@@ -1,6 +1,6 @@
 Django==5.2.17
 PyMySQL==1.1.3
-djangorestframework==3.17.2
+djangorestframework==3.18.2
 django-cors-headers==4.9.0
 Pillow==13.0.0
 psutil==5.9.8

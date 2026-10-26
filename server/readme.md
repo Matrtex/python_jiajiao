@@ -15,7 +15,7 @@ source xxxx.sql
 ```
 4. 修改settings.py中的配置信息
 5. 复制资源，将upload文件夹复制到server目录下
-6. 安装python 3.8
+6. 安装 Python 3.11 或更高版本
 7. 安装依赖包
 ```
 pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
